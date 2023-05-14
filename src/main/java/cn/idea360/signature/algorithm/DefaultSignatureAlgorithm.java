@@ -7,7 +7,8 @@ import org.springframework.objenesis.instantiator.util.ClassUtils;
  */
 public enum DefaultSignatureAlgorithm {
 
-	MD5(MD5SignatureAlgorithm.class);
+	MD5(MD5SignatureAlgorithm.class), HmacSHA1(HmacSHA1SignatureAlgorithm.class), HmacSHA256(
+			HmacSHA256SignatureAlgorithm.class);
 
 	private final Class<? extends SignatureAlgorithm> algorithmClass;
 
