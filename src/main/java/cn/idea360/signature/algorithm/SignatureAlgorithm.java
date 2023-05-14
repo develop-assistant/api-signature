@@ -5,6 +5,6 @@ package cn.idea360.signature.algorithm;
  */
 public interface SignatureAlgorithm {
 
-	String signature(String signatureData);
+	String signature(String signatureData, String appSecret);
 
 }

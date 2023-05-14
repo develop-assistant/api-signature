@@ -23,6 +23,28 @@
 </dependency>
 ```
 
+### 签名规则
+
+```text
+ String sign = base64(md5AsHex(query+body+nonce+timestamp+appSecret));
+```
+
+### 支持的签名算法
+
+- MD5
+- HmacSHA1
+- HmacSHA256
+
+### 支持的请求
+
+- GET
+- POST Content-Type:application/x-www-form-urlencoded
+- POST Content-Type:application/json
+
+### 不支持的请求
+
+- POST Content-Type:multipart/form-data
+
 ### 使用示例
 
 **签名配置**
@@ -32,7 +54,7 @@
 ```text
 appId: xxx
 appSecret: 123
-签名类型: MD5
+signatureMethod: MD5
 ```
 
 ```java
@@ -92,14 +114,3 @@ public class SignatureAutoConfiguration {
 
 ![](https://raw.githubusercontent.com/qidian360/oss/master/images/api-sign-demo.png)
 
-### 签名规则
-
-```text
- String sign = base64(md5AsHex(query+body+nonce+timestamp+appSecret));
-```
-### TODO
-
-- [ ] 更多签名算法
-- [ ] 更多HTTP请求类型
-- [ ] 使用示例说明
-- [ ] 基础包中移除spring依赖

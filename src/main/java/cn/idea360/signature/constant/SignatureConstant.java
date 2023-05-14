@@ -1,4 +1,4 @@
-package cn.idea360.signature.properties;
+package cn.idea360.signature.constant;
 
 /**
  * @author cuishiying

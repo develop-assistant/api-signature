@@ -5,7 +5,12 @@ import org.apache.commons.codec.binary.Base64;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.DigestUtils;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -52,6 +57,38 @@ public class SecretTest {
 	@Test
 	void nonce() {
 		log.info(UUID.randomUUID().toString().toLowerCase());
+	}
+
+	@Test
+	void hmacSha256() throws NoSuchAlgorithmException, InvalidKeyException {
+		String appSecret = "123";
+		Mac hmacSha256 = Mac.getInstance("HmacSHA256");
+		byte[] appSecretBytes = appSecret.getBytes(StandardCharsets.UTF_8);
+		hmacSha256.init(new SecretKeySpec(appSecretBytes, 0, appSecretBytes.length, "HmacSHA256"));
+		byte[] md5Result = hmacSha256.doFinal("hello".getBytes(StandardCharsets.UTF_8));
+		String signature = Base64.encodeBase64String(md5Result);
+		log.info(signature);
+	}
+
+	@Test
+	void hmacSha1() throws NoSuchAlgorithmException, InvalidKeyException {
+		String appSecret = "123";
+		Mac hmacSha1 = Mac.getInstance("HmacSHA1");
+		byte[] appSecretBytes = appSecret.getBytes(StandardCharsets.UTF_8);
+		hmacSha1.init(new SecretKeySpec(appSecretBytes, 0, appSecretBytes.length, "HmacSHA1"));
+		byte[] md5Result = hmacSha1.doFinal("hello".getBytes(StandardCharsets.UTF_8));
+		String signature = Base64.encodeBase64String(md5Result);
+		log.info(signature);
+	}
+
+	@Test
+	void base64AndMD5() throws NoSuchAlgorithmException {
+		final MessageDigest md = MessageDigest.getInstance("MD5");
+		md.reset();
+		md.update("hello".getBytes(StandardCharsets.UTF_8));
+		byte[] md5Result = md.digest();
+		String signature = Base64.encodeBase64String(md5Result);
+		log.info(signature);
 	}
 
 }

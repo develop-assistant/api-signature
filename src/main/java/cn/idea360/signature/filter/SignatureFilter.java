@@ -2,7 +2,10 @@ package cn.idea360.signature.filter;
 
 import cn.idea360.signature.algorithm.SignatureAlgorithm;
 import cn.idea360.signature.configration.SignatureConfigration;
-import cn.idea360.signature.properties.*;
+import cn.idea360.signature.properties.Secret;
+import cn.idea360.signature.constant.SignatureConstant;
+import cn.idea360.signature.properties.SignatureProperties;
+import cn.idea360.signature.properties.SignatureType;
 import cn.idea360.signature.storage.SecretStorage;
 import cn.idea360.signature.wrapper.ContentCachingRequestWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,7 +26,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+import static cn.idea360.signature.constant.HttpConstant.CONTENT_TYPE_FORM;
+import static cn.idea360.signature.constant.HttpConstant.CONTENT_TYPE_JSON;
 import static java.time.temporal.ChronoUnit.SECONDS;
 
 /**
@@ -108,7 +114,7 @@ public class SignatureFilter implements Filter {
 		String query = requestWrapper.getQueryString();
 		String body = this.obtainBody(requestWrapper);
 		String signatureData = String.format("%s%s%s%s%s", query, body, nonce, timestamp, secret.getAppSecret());
-		String sign = signatureAlgorithmMap.get(algorithm).signature(signatureData);
+		String sign = signatureAlgorithmMap.get(algorithm).signature(signatureData, secret.getAppSecret());
 		if (!sign.equals(signature)) {
 			this.sendUnauthorizedMessage(response, "验签失败");
 			return;
@@ -124,6 +130,11 @@ public class SignatureFilter implements Filter {
 	private String obtainBody(HttpServletRequest request) throws IOException {
 		byte[] requestBody = StreamUtils.copyToByteArray(request.getInputStream());
 		return new String(requestBody, StandardCharsets.UTF_8);
+	}
+
+	private String obtainBodyIgnoreBlank(HttpServletRequest request) throws IOException {
+		return request.getReader().lines().collect(Collectors.joining(System.lineSeparator()))
+				.replaceAll("\\s*|\\t|\\r|\\n", "");
 	}
 
 	private Secret obtainSecret(String appid) {
@@ -159,6 +170,17 @@ public class SignatureFilter implements Filter {
 		catch (Exception e) {
 			log.error("can't push signature err message", e);
 		}
+	}
+
+	private String buildStringToSign(HttpServletRequest request) throws IOException {
+		StringBuilder sb = new StringBuilder();
+		if ("GET".equals(request.getMethod()) || CONTENT_TYPE_FORM.equals(request.getHeader("Content-type"))) {
+			sb.append(request.getQueryString());
+		}
+		if (CONTENT_TYPE_JSON.equals(request.getHeader("Content-type"))) {
+			sb.append(obtainBody(request));
+		}
+		return sb.toString();
 	}
 
 }

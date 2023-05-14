@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 public class MD5SignatureAlgorithm implements SignatureAlgorithm {
 
 	@Override
-	public String signature(String signatureData) {
+	public String signature(String signatureData, String appSecret) {
 		String md5 = DigestUtils.md5DigestAsHex(signatureData.getBytes(StandardCharsets.UTF_8)).toLowerCase();
 		return Base64.encodeBase64String(md5.getBytes(StandardCharsets.UTF_8));
 	}
