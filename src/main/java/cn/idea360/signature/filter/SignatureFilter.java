@@ -113,13 +113,23 @@ public class SignatureFilter implements Filter {
 
 		String query = requestWrapper.getQueryString();
 		String body = this.obtainBody(requestWrapper);
-		String signatureData = String.format("%s%s%s%s%s", query, body, nonce, timestamp, secret.getAppSecret());
+		String signatureData = buildStringToSign(signatureProperties.isConvertNullParamToEmpty(), query, body, nonce,
+				timestamp, secret.getAppSecret());
 		String sign = signatureAlgorithmMap.get(algorithm).signature(signatureData, secret.getAppSecret());
 		if (!sign.equals(signature)) {
 			this.sendUnauthorizedMessage(response, "验签失败");
 			return;
 		}
 		filterChain.doFilter(requestWrapper, response);
+	}
+
+	private String buildStringToSign(boolean convertNullParamToEmpty, String query, String body, String nonce,
+			String timestamp, String appSecret) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(convertNullParamToEmpty && Objects.isNull(query) ? "" : query)
+				.append(convertNullParamToEmpty && Objects.isNull(body) ? "" : body).append(nonce).append(timestamp)
+				.append(appSecret);
+		return sb.toString();
 	}
 
 	private String obtainHeader(HttpServletRequest request, String header) {

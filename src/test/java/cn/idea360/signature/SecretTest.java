@@ -36,7 +36,7 @@ public class SecretTest {
 	@Test
 	void md5() {
 		String signatureData = "当我遇上你";
-		String sign = DigestUtils.md5DigestAsHex(signatureData.getBytes(StandardCharsets.UTF_8)).toLowerCase();
+		String sign = DigestUtils.md5DigestAsHex(signatureData.getBytes(StandardCharsets.UTF_8));
 		log.info(sign);
 	}
 

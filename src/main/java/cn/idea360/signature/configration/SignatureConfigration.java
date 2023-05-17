@@ -29,4 +29,8 @@ public class SignatureConfigration {
 		}
 	}
 
+	public void addSignatureAlgorithm(String name, SignatureAlgorithm signatureAlgorithm) {
+		signatureAlgorithmMap.put(name, signatureAlgorithm);
+	}
+
 }

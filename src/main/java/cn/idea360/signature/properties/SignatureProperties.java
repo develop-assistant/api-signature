@@ -37,4 +37,9 @@ public class SignatureProperties {
 	 */
 	private long expireInSeconds = 60L * 5;
 
+	/**
+	 * 验签是否将value=null的参数转换为""
+	 */
+	private boolean convertNullParamToEmpty = false;
+
 }
