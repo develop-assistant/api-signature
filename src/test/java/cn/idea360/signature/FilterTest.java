@@ -36,7 +36,7 @@ public class FilterTest {
 
 	@BeforeEach
 	public void init() throws Exception {
-		secret = Secret.builder().appId("xxx").appSecret("123").build();
+		secret = Secret.builder().appName("当我遇上你").appId("xxx").appSecret("123").build();
 		SignatureProperties signatureProperties = new SignatureProperties();
 		signatureProperties.setSecrets(Collections.singletonList(secret));
 		signatureProperties.setIncludedUris(Collections.singletonList("/sign"));

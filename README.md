@@ -19,7 +19,7 @@
 <dependency>
     <groupId>cn.idea360</groupId>
     <artifactId>api-signature</artifactId>
-    <version>0.0.1</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 
@@ -54,6 +54,7 @@
 示例中配置URI `/sign/**` 需要验签, 签名中心分发的密钥信息为:
 
 ```text
+appName: 当我遇上你
 appId: xxx
 appSecret: 123
 signatureMethod: MD5
@@ -85,6 +86,7 @@ public class SignatureAutoConfiguration {
         SignatureProperties signatureProperties = new SignatureProperties();
         signatureProperties.setIncludedUris(Collections.singletonList("/sign/**"));
         signatureProperties.setSecrets(Collections.singletonList(Secret.builder()
+                .appName("当我遇上你")
                 .appId("xxx")
                 .appSecret("123")
                 .build()));
@@ -115,8 +117,3 @@ public class SignatureAutoConfiguration {
 **接口请求示例**
 
 ![](https://raw.githubusercontent.com/qidian360/oss/master/images/api-sign-demo.png)
-
-### TODO
-
-- null参数
-- 验签参数选择

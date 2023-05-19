@@ -10,6 +10,8 @@ import lombok.Data;
 @Data
 public class Secret {
 
+	private String appName;
+
 	private String appId;
 
 	private String appSecret;
